@@ -33,8 +33,8 @@
 ---
 
 ## 폴더 구조
-├─ main(2).html       // 초안 (사용x)            
-├─ main.html          // 최종안        
+├─ main(2).htmlㅤㅤㅤㅤㅤ// 초안 (사용x)            
+├─ main.htmlㅤㅤㅤㅤㅤㅤ// 최종안        
 └─ Main.java         
 
 
