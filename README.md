@@ -21,12 +21,12 @@
   - 마우스 올리거나 터치하면 도망
   - 화면 밖으로 안 나가게 제한(경기장 방식)
  <img width="1268" height="659" alt="image" src="https://github.com/user-attachments/assets/4b7a4e31-72dc-406e-ba64-c089589cdaa4" />
-
+  
 - **Celebration Overlay**
   - `네` 클릭 시 오버레이로 성공 화면 표시
   - 컨페티 애니메이션
 <img width="1273" height="656" alt="image" src="https://github.com/user-attachments/assets/9bae51f8-a1ce-4643-b64d-f8e390af6834" />
- 
+   
 - **Cute UI**
   - 말풍선/배경 이모지/버튼 펄스 등
 
