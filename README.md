@@ -1,4 +1,4 @@
-<img width="1268" height="659" alt="image" src="https://github.com/user-attachments/assets/4b7a4e31-72dc-406e-ba64-c089589cdaa4" /># duzzonku-prank 😈🍪
+# duzzonku-prank 😈🍪
 
 “두쫀쿠를 사주시겠습니까?”  
 친구들한테 장난치기 좋은 초간단 프랭크 웹페이지입니다.
@@ -17,6 +17,7 @@
 
 ## 기능
 
+<img width="1268" height="659" alt="image" src="https://github.com/user-attachments/assets/4b7a4e31-72dc-406e-ba64-c089589cdaa4" />
 ![Uploading image.png…]()
 
 - **Runaway “No” 버튼**
