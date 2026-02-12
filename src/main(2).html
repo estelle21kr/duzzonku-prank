@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title> 쉿 </title>
+
+    <style>
+        body {
+            font-family: system-ui, -apple-system, Segoe UI, Roboto, "Noto Sans KR", sans-serif;
+            margin: 0;
+            height: 100vh;
+            overflow: hidden;
+            display: grid;
+            place-items: center;
+            background: #fafafa;
+        }
+        .wrap { text-align: center; }
+        h1 { margin: 0 0 24px; }
+
+        /* 공통 버튼은 그대로 */
+        .btn {
+            padding: 12px 18px;
+            font-size: 16px;
+            border: 0;
+            border-radius: 12px;
+            cursor: pointer;
+        }
+        .btn-yes { background: #2ecc71; color: #fff; }
+
+        .btn-row{
+            display: flex;
+            justify-content: center;  /* 묶음 자체를 중앙 */
+            align-items: center;
+            gap: 16px;                /* 버튼 사이 간격 */
+        }
+
+        /* 아니요는 기본 상태에서는 "그냥 버튼" */
+        .btn-no{
+            background:#e74c3c;
+            color:#fff;
+            transition: left 220ms ease, top 220ms ease;
+            touch-action: manipulation;
+        }
+
+        .placeholder {
+            display: inline-block;
+        }
+
+        /* 파티 화면 */
+        .party {
+            position: fixed;
+            inset: 0;
+            display: none;              /* 기본은 숨김 */
+            place-items: center;
+            text-align: center;
+            background: radial-gradient(circle at 20% 20%, #fff, #ffe6f2, #e6f7ff);
+            z-index: 9999;
+            overflow: hidden;
+        }
+        .party.show { display: grid; }
+
+        .party h2 { font-size: 44px; margin: 0 0 10px; }
+        .party p  { font-size: 18px; margin: 0 0 24px; opacity: 0.85; }
+
+        .sparkles {
+            font-size: 46px;
+            animation: pop 900ms ease-in-out infinite alternate;
+        }
+        @keyframes pop {
+            from { transform: scale(1); }
+            to   { transform: scale(1.12); }
+        }
+
+        /* 🎉 간단 컨페티 */
+        .confetti {
+            position: absolute;
+            top: -10vh;
+            width: 10px;
+            height: 16px;
+            border-radius: 3px;
+            opacity: 0.9;
+            animation: fall linear infinite;
+        }
+        @keyframes fall {
+            to { transform: translateY(120vh) rotate(720deg); }
+        }
+
+        .party .btn {
+            background: #111;
+            color: #fff;
+            padding: 12px 16px;
+            border-radius: 12px;
+        }
+    </style>
+</head>
+
+<body>
+<div class="wrap" id="main">
+    <h1>두쫀쿠를 사주시겠습니까?</h1>
+
+    <div class="btn-row" id="btnRow">
+        <button type="button" class="btn btn-yes" id="yesBtn">네</button>
+        <button type="button" class="btn btn-no" id="noBtn">아니요</button>
+    </div>
+</div>
+
+
+<!-- 파티 화면(오버레이) -->
+<div class="party" id="party">
+    <div>
+        <div class="sparkles">🎉🎊✨</div>
+        <h2>성공!!!</h2>
+        <p>두쫀쿠 확정 😎</p>
+        <button type="button" class="btn" id="restartBtn">다시 하기</button>
+    </div>
+</div>
+
+<script>
+    // ===== 아니요 버튼 도망 (PC + 모바일) =====
+    const noBtn = document.getElementById("noBtn");
+    let placeholder = null;
+
+    function moveNo(e) {
+        if (e) e.preventDefault();
+
+        const pad = 12;
+
+        // 1) 자리표(placeholder) 만들어서 네 버튼 위치 고정
+        if (!placeholder) {
+            const r = noBtn.getBoundingClientRect();
+
+            placeholder = document.createElement("span");
+            placeholder.className = "placeholder";
+            placeholder.style.display = "inline-block";
+            placeholder.style.width = r.width + "px";
+            placeholder.style.height = r.height + "px";
+
+            // noBtn 자리(원래 위치)에 자리표를 남김
+            noBtn.parentNode.insertBefore(placeholder, noBtn);
+        }
+
+        // 2) auto -> px 전환 때문에 첫 이동이 뚝 끊기는 문제 해결:
+        //    현재 화면 좌표를 출발점(px)로 먼저 세팅한 다음, 다음 프레임에 목표 좌표로 이동
+        const start = noBtn.getBoundingClientRect();
+
+        noBtn.style.position = "fixed";
+        noBtn.style.margin = "0";
+        noBtn.style.transform = "none";
+        noBtn.style.left = start.left + "px";
+        noBtn.style.top  = start.top + "px";
+
+        requestAnimationFrame(() => {
+            const rect = noBtn.getBoundingClientRect();
+            const vw = document.documentElement.clientWidth;
+            const vh = document.documentElement.clientHeight;
+
+            const maxX = Math.max(pad, vw - rect.width - pad);
+            const maxY = Math.max(pad, vh - rect.height - pad);
+
+            const x = pad + Math.random() * (maxX - pad);
+            const y = pad + Math.random() * (maxY - pad);
+
+            noBtn.style.left = x + "px";
+            noBtn.style.top  = y + "px";
+        });
+    }
+
+    // PC: 마우스 올리면 도망
+    noBtn.addEventListener("mouseenter", moveNo);
+
+    // 모바일/터치: 누르는 순간 도망 (클릭/선택 방지)
+    noBtn.addEventListener("pointerdown", moveNo, { passive: false });
+
+    // (일부 iOS 사파리 보강용) 터치에서도 확실히 도망
+    noBtn.addEventListener("touchstart", moveNo, { passive: false });
+
+
+    // ===== 네 누르면 파티 화면 =====
+    const yesBtn = document.getElementById("yesBtn");
+    const party = document.getElementById("party");
+    const restartBtn = document.getElementById("restartBtn");
+
+    function makeConfetti(count = 70) {
+        // 기존 컨페티 제거
+        party.querySelectorAll(".confetti").forEach(el => el.remove());
+
+        for (let i = 0; i < count; i++) {
+            const c = document.createElement("div");
+            c.className = "confetti";
+
+            // 랜덤 위치/속도/크기
+            c.style.left = (Math.random() * 100) + "vw";
+            c.style.animationDuration = (2.2 + Math.random() * 2.2) + "s";
+            c.style.animationDelay = (Math.random() * 0.8) + "s";
+            c.style.transform = `rotate(${Math.random() * 360}deg)`;
+
+            const size = 7 + Math.random() * 10;
+            c.style.width = size + "px";
+            c.style.height = (size * 1.6) + "px";
+
+            // 색상은 랜덤 (CSS에서 색 지정 안 하고 여기서만)
+            c.style.background = `hsl(${Math.random() * 360}, 90%, 60%)`;
+
+            party.appendChild(c);
+        }
+    }
+
+    yesBtn.addEventListener("click", () => {
+        party.classList.add("show");
+        makeConfetti(90);
+    });
+
+    restartBtn.addEventListener("click", () => {
+        party.classList.remove("show");
+
+        // 자리표 제거하고 원래 flex 흐름으로 복귀
+        if (placeholder) {
+            placeholder.replaceWith(noBtn); // 자리표 위치로 다시 넣기
+            placeholder = null;
+        }
+
+        // 원래 flex 자리로 복귀
+        noBtn.style.position = "";
+        noBtn.style.left = "";
+        noBtn.style.top = "";
+        noBtn.style.transform = "";
+        home = null; // 다음 게임 위해 초기화
+    });
+
+</script>
+</body>
+</html>
