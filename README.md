@@ -29,9 +29,9 @@
 ---
 
 ## 폴더 구조
-├─ main(2).html // 초안 
-├─ main.html // 최종안
-└─ Main.java
+├─ main(2).html // 초안      
+├─ main.html // 최종안        
+└─ Main.java         
 
 
 ---
